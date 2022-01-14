@@ -30,5 +30,4 @@ useEffect(() => {
     </Row>
   );
 }
-
 export default Fitness;

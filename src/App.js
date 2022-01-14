@@ -7,6 +7,8 @@ import Header from './components/header';
 import User from "./components/user";
 import Admin from "./components/admin";
 import Fitness from "./components/Fitness";
+import Trip from "./components/Trip";
+import Guide from "./components/Guide";
 import {
   BrowserRouter as Router,
   Switch,
@@ -17,6 +19,7 @@ import {
   NavLink,
   Prompt
 } from "react-router-dom";
+
 
 
  
@@ -56,6 +59,18 @@ function App() {
     </Route>
     <Route path="/fitness">
       <Fitness facade={facade} setErrorMessage={setErrorMessage} />
+    </Route>
+
+
+    <Route path="/trip">
+    {facade.hasUserAccess('user', loggedIn) && 
+      <Trip facade={facade} setErrorMessage={setErrorMessage} />}
+    </Route>
+
+
+    <Route path="/guide">
+    {facade.hasUserAccess('admin', loggedIn) && 
+      <Guide facade={facade} setErrorMessage={setErrorMessage} />}
     </Route>
   </Switch>
     </div>

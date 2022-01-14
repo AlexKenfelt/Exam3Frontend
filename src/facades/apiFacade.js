@@ -1,4 +1,4 @@
-const URL = "https://akenfelt.dk/tomcat/CA2";
+const URL = "https://akenfelt.dk/tomcat/exam";
  
 function handleHttpErrors(res)
 {
@@ -51,6 +51,67 @@ const fetchData = (endpoint, updateAction, SetErrorMessage) =>
             else { SetErrorMessage("Network error"); }
         })
 }
+
+const createTrip = (name, date, time, location, duration, packingList, SetErrorMessage) =>{
+    const options = makeOptions("POST", true, { tripName: name, tripDate: date, tripTime: time, tripLocation: location, tripDuration: duration, tripPackingList: packingList}); //True add's the token
+    return fetch(URL + "/api/trip/create/trip", options)
+    .then(handleHttpErrors)
+    //.then((data) => updateAction(data))
+    .catch(err =>
+    {
+        if (err.status)
+        {
+            console.log(err)
+            err.fullError.then(e => SetErrorMessage(e.code + ": " + e.message))
+        }
+        else { SetErrorMessage("Network error"); }
+    })
+}
+
+const createGuide = (name, gender, SetErrorMessage) => {
+    const options = makeOptions("POST", true, { guideName: name, guideGender: gender}); //True add's the token
+    return fetch(URL + "/api/trip/create/guide", options)
+    .then(handleHttpErrors)
+    //.then((data) => updateAction(data))
+    .catch(err =>
+    {
+        if (err.status)
+        {
+            console.log(err)
+            err.fullError.then(e => SetErrorMessage(e.code + ": " + e.message))
+        }
+        else { SetErrorMessage("Network error"); }
+    })
+}
+
+const addUserToTrip = (endpoint, SetErrorMessage) => {
+    const options = makeOptions("POST", true); //True add's the token
+    return fetch(URL + "/api/trip/usertotrip" + endpoint, options)
+    .then(handleHttpErrors)
+    //.then((data) => updateAction(data))
+    .catch(err =>
+    {
+        if (err.status)
+        {
+            console.log(err)
+            err.fullError.then(e => SetErrorMessage(e.code + ": " + e.message))
+        }
+        else { SetErrorMessage("Network error"); }
+    })
+}
+
+//collect userName out from token
+const getUserName = () =>
+    {
+        const token = getToken()
+        if (token != null)
+        {
+            const payloadBase64 = getToken().split('.')[1]
+            const decodedClaims = JSON.parse(window.atob(payloadBase64))
+            const username = decodedClaims.username
+            return username
+        } else return ""
+    }
 
     // Security funktionalitet
 
@@ -113,6 +174,10 @@ const fetchData = (endpoint, updateAction, SetErrorMessage) =>
     return {
         makeOptions,
         fetchData,
+        createTrip,
+        createGuide,
+        addUserToTrip,
+        getUserName,
         setToken,
         getToken,
         loggedIn,
